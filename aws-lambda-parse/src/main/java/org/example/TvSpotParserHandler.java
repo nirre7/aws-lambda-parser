@@ -22,10 +22,15 @@ public class TvSpotParserHandler implements RequestHandler<RequestDto, List<Spot
             InputStream file = getExcelFileFromS3Service.getFile();
             spotDtos = parseExcelFileService.parse(file);
 
+            context.getLogger().log("#######################################");
+            context.getLogger().log("Parsed " + spotDtos.size() + " spots.");
+            context.getLogger().log("#######################################");
+
         } catch (IOException e) {
             context.getLogger().log("Could not fetch file from s3 :(");
         }
 
-        return spotDtos;
+//        return spotDtos; //
+        return new ArrayList<>();
     }
 }
