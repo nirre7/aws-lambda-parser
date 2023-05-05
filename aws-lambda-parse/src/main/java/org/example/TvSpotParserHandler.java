@@ -1,14 +1,31 @@
 package org.example;
 
-
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 
-public class TvSpotParserHandler implements RequestHandler<RequestDto, String> {
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TvSpotParserHandler implements RequestHandler<RequestDto, List<SpotDto>> {
 
     @Override
-    public String handleRequest(RequestDto s, Context context) {
-        context.getLogger().log("Input: " + s.getStuff());
-        return "Hello " + s;
+    public List<SpotDto> handleRequest(RequestDto s, Context context) {
+
+        GetExcelFileFromS3Service getExcelFileFromS3Service = new GetExcelFileFromS3Service();
+        ParseExcelFileService parseExcelFileService = new ParseExcelFileService();
+        List<SpotDto> spotDtos = new ArrayList<>();
+
+        try {
+
+            InputStream file = getExcelFileFromS3Service.getFile();
+            spotDtos = parseExcelFileService.parse(file, context);
+
+        } catch (IOException e) {
+            context.getLogger().log("Could not fetch file from s3 :(");
+        }
+
+        return spotDtos;
     }
 }
