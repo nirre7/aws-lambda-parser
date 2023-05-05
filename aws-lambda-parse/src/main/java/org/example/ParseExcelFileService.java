@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ParseExcelFileService {
 
-    public List<SpotDto> parse(InputStream file, Context context) throws IOException {
+    public List<SpotDto> parse(InputStream file) throws IOException {
 
         List<SpotDto> parsedRows = new ArrayList<>();
         XSSFWorkbook workbook = new XSSFWorkbook(file);
@@ -24,7 +24,7 @@ public class ParseExcelFileService {
             if (row.getRowNum() > 15) {
                 Cell channel = row.getCell(0);
                 if (channel != null) {
-                    SpotDto dto = createDtoFromRow(row, context);
+                    SpotDto dto = createDtoFromRow(row);
                     parsedRows.add(dto);
                 }
             }
@@ -35,7 +35,7 @@ public class ParseExcelFileService {
         return parsedRows;
     }
 
-    private SpotDto createDtoFromRow(Row row, Context context) {
+    private SpotDto createDtoFromRow(Row row) {
 
         SpotDto dto = new SpotDto();
 
@@ -63,7 +63,7 @@ public class ParseExcelFileService {
             dto.setTenPlusInTa(row.getCell(20).getNumericCellValue());
             dto.setUniqueInTa(row.getCell(21).getNumericCellValue());
         } catch (Exception e) {
-            context.getLogger().log(row.getRowNum() + " " + e.getMessage());
+            // nah ..
         }
 
         return dto;
